@@ -80,6 +80,7 @@ checkInput = {
     }
 }   
     
+import store from '../vuex/store';
 
 function toggleError(obj, boolean) {
     let inputHasError = true;
@@ -95,26 +96,32 @@ function toggleError(obj, boolean) {
 }
 
 export function clearError (obj) {
-    let $obj = $(obj);
-    $obj.parent('.input__wrap').find('p').removeClass('error__show');
+    let $obj = $(obj).parent('.input__wrap').find('.js__input__status--error');
+    $obj.removeClass('error__show');
+    $obj.empty();
 }
 
 export function checkInput (target, value) {
 
-    let $target = $(target);
+    let $target = $(target),
+        isError,
+        errorMsg;
 
     //先丟進去判斷是哪一種input
     if (target.type == 'email') {
         // 判斷input的值是否符合格式
-        // 切換狀態的事情
-        return toggleError($target , checkInput.Validate.isEmail(value) );
+        // 如果不符合，要拋出哪種訊息
+        // 引入vuex的state，千萬不要從這邊改vuex裡面的state
+        isError  = toggleError($target , checkInput.Validate.isEmail(value) );
+        errorMsg = store.state.app.errorState.type;
+        
+        return [isError , errorMsg];
     }
     if (target.type == 'password') {
-        return toggleError($target , checkInput.Validate.chkPassword(value) );
+        
+        isError  = toggleError($target , checkInput.Validate.chkPassword(value) );
+        errorMsg = store.state.app.errorState.less;
+
+        return [isError , errorMsg];        
     }    
-}
-
-export function checkForm () {
-
-    return;
 }

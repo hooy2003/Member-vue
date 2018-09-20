@@ -7,7 +7,7 @@ import App from './app.vue';
 
 // import { sync } from 'vuex-router-sync';
 import { routes } from './routes';
-// import store from './vuex/store';
+import store from './vuex/store';
 
 // sync(store, router);
 
@@ -22,7 +22,6 @@ router.beforeEach( (to, form, next) => {
     const isLogin = localStorage.getItem('token') == 'ImLogin';
 
     if(isLogin) {
-        console.log('412');
         next();
     } else {
         if ( to.path !== '/login' && to.path !== '/signup') {
@@ -38,6 +37,7 @@ router.beforeEach( (to, form, next) => {
 
 new Vue({
   el: '#page-wrapper',
+  store,
   router,
   render: h => h(App)
 });

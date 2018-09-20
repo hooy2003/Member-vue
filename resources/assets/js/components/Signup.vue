@@ -8,27 +8,26 @@
       <div class="input__wrap">
         <!-- <label>信箱</label> -->
         <input type="email" 
-               v-model="email"
-               @focus="clear($event)"
+               v-model="email.value"
+               @focus="clearEmail($event)"
                @blur="check($event)"
                placeholder="信箱"
                >
-        <p class="input__status--error js__input__status--error email"></p>
-        <!-- 改成，改變狀態的做法看看 -->
-        <!-- <p v-show="false"
-           class="input__status--error js__input__status--error">{{emailErrorMsg}}</p> -->
+        <p v-show="email.error"
+           class="input__status--error js__input__status--error">{{email.errorMsg}}</p>
       </div>
       <!-- <div class="input__wrap">
         <input type="text" v-model="account" placeholder="帳號" required>
       </div> -->
       <div class="input__wrap">
         <input type="password"
-               v-model="passWord"
-               @focus="clear($event)"
+               v-model="passWord.value"
+               @focus="clearPassWord($event)"
                @blur="check($event)"
                placeholder="密碼"
                >
-        <p class="input__status--error js__input__status--error pw"></p>   
+        <p v-show="passWord.error"
+           class="input__status--error js__input__status--error">{{passWord.errorMsg}}</p>
       </div>
       <div class="form_buttonbar">
         <button type="submit"
@@ -39,18 +38,24 @@
   </section>
 </template>
 <script>
-import { checkInput, clearError, checkForm } from '../utils/sign';
+import { checkInput } from '../utils/sign';
 import { mapGetters } from 'vuex'
 
   export default {
     data () {
       return {
-        inputError: false,
+        inputHasError: false,
         errors: [],
-        email: '',
-        emailError: false,
-        emailErrorMsg: '',
-        passWord: '',
+        email: {
+          value: '',
+          error: false,
+          errorMsg: '',
+        },
+        passWord: {
+          value: '',
+          error: false,
+          errorMsg: '',
+        },
       }
     },
     computed: {
@@ -62,33 +67,46 @@ import { mapGetters } from 'vuex'
       // **
       // * Can Use vee-validate!
       // *
-      clear(e) {
-        clearError(e.target);
+      clearEmail(e) {
+        this.email.error    = false;
+        this.email.errorMsg = '';
+      },
+      clearPassWord(e) {
+        this.passWord.error    = false;
+        this.passWord.errorMsg = '';
       },
       check(e) {
-        // checkInput => return [isError , errorMsg]
+        // checkInput => return [type, isError, errorMsg]
         let errorStaus = checkInput(e.target, e.target.value),
-            isError    = errorStaus[0],
-            errorMsg   = errorStaus[1];
+            type       = errorStaus[0],
+            isError    = errorStaus[1],
+            errorMsg   = errorStaus[2];
 
-        if (isError) {
-          console.log('dddd', isError);
-          console.log('dddd2', errorMsg);
-          // 表單有錯誤
-          this.inputError = isError;
+        if (type == 'email') {
+          // 把'是否有錯誤'當作開關
+          this.inputHasError = isError;
+          this.email.error    = isError;
 
-          // 讓錯誤訊息出現errorMsg該出現的地方
-          let node = e.target.nextElementSibling;
-          let content = document.createTextNode(errorMsg);
+          // input有錯誤
+          if (isError) {
+            // 讓錯誤訊息出現errorMsg該出現的地方
+            this.email.errorMsg = errorMsg;
+          }
+          // input正確
+          else {
+            this.email.errorMsg = '';
+          }
+        }
+        if (type == 'password') {
+          this.inputHasError = isError;
+          this.passWord.error = isError;
 
-          node.appendChild(content);
-          // this.emailError    = isError;
-          // this.emailErrorMsg = errorMsg;
-        }else {
-          // 表單正確
-          this.inputError = isError;
-          // this.emailError = isError;
-          // this.emailErrorMsg = '';
+          if (isError) {
+            this.passWord.errorMsg = errorMsg;
+          }
+          else {
+            this.passWord.errorMsg = '';
+          }
         }
       },
       checkForm(e) {
@@ -98,24 +116,24 @@ import { mapGetters } from 'vuex'
         // * 資料錯誤？ 帳號重複？
         // * 註冊成功，直接登入
         // *
+
         // input有錯誤
-        if(this.inputError) {
+        if(this.inputHasError) {
           return;
         }
-        if(!this.email) {
+        if(!this.email.value) {
           // 計算是否有錯誤
           this.errors.push( this.errorState.emailempty );
-
-          // this.emailErrorMsg = true;
-          $('.input__status--error.email').append( this.errorState.emailempty );
-          $('.input__status--error.email').addClass('error__show');
+          // 存在 Vuex sotre.app
+          this.email.error    = true;
+          this.email.errorMsg = this.errorState.emailempty;
 
         }
-        if(!this.passWord) {
+        if(!this.passWord.value) {
           this.errors.push( this.errorState.passwordempty );
 
-          $('.input__status--error.pw').append( this.errorState.passwordempty );
-          $('.input__status--error.pw').addClass('error__show');
+          this.passWord.error    = true;
+          this.passWord.errorMsg = this.errorState.passwordempty;
         }
         if (!this.errors.length) {
           alert('註冊成功');
@@ -128,7 +146,6 @@ import { mapGetters } from 'vuex'
           //   if (res.error) {
           //     this.errors.push(res.error);
           //   } else {
-          //     // 在成功的时候重定向到一个新的 URL 或做一些别的事情
           //     alert('ok!');
           //   }
           // });

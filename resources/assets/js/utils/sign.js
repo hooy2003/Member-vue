@@ -1,3 +1,5 @@
+import store from '../vuex/store';
+
 /* 
     .Validate 
     isEmail:email格式檢查 return true、false 
@@ -78,32 +80,12 @@ checkInput = {
             return M[1];
         })()
     }
-}   
-    
-import store from '../vuex/store';
-
-function toggleError(obj, boolean) {
-    let inputHasError = true;
-
-    if (boolean) {
-        obj.parent('.input__wrap').find('p').removeClass('error__show');
-        inputHasError = false;
-    }else {
-        obj.parent('.input__wrap').find('p').addClass('error__show');
-        inputHasError = true;
-    }
-    return inputHasError;
 }
 
-export function clearError (obj) {
-    let $obj = $(obj).parent('.input__wrap').find('.js__input__status--error');
-    $obj.removeClass('error__show');
-    $obj.empty();
-}
 
 export function checkInput (target, value) {
 
-    let $target = $(target),
+    let type,
         isError,
         errorMsg;
 
@@ -112,16 +94,17 @@ export function checkInput (target, value) {
         // 判斷input的值是否符合格式
         // 如果不符合，要拋出哪種訊息
         // 引入vuex的state，千萬不要從這邊改vuex裡面的state
-        isError  = toggleError($target , checkInput.Validate.isEmail(value) );
+        type     = 'email';
+        isError  = !checkInput.Validate.isEmail(value);
         errorMsg = store.state.app.errorState.type;
         
-        return [isError , errorMsg];
+        return [type, isError, errorMsg];
     }
-    if (target.type == 'password') {
-        
-        isError  = toggleError($target , checkInput.Validate.chkPassword(value) );
+    if (target.type == 'password') {        
+        type     = 'password';
+        isError  = !checkInput.Validate.chkPassword(value);
         errorMsg = store.state.app.errorState.less;
 
-        return [isError , errorMsg];        
+        return [type, isError, errorMsg];        
     }    
 }

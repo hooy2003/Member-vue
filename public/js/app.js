@@ -6992,7 +6992,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
-//
 
 
 
@@ -7000,12 +6999,18 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      inputError: false,
+      inputHasError: false,
       errors: [],
-      email: '',
-      emailError: false,
-      emailErrorMsg: '',
-      passWord: ''
+      email: {
+        value: '',
+        error: false,
+        errorMsg: ''
+      },
+      passWord: {
+        value: '',
+        error: false,
+        errorMsg: ''
+      }
     };
   },
 
@@ -7014,33 +7019,45 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     // **
     // * Can Use vee-validate!
     // *
-    clear: function clear(e) {
-      Object(__WEBPACK_IMPORTED_MODULE_0__utils_sign__["b" /* clearError */])(e.target);
+    clearEmail: function clearEmail(e) {
+      this.email.error = false;
+      this.email.errorMsg = '';
+    },
+    clearPassWord: function clearPassWord(e) {
+      this.passWord.error = false;
+      this.passWord.errorMsg = '';
     },
     check: function check(e) {
-      // checkInput => return [isError , errorMsg]
+      // checkInput => return [type, isError, errorMsg]
       var errorStaus = Object(__WEBPACK_IMPORTED_MODULE_0__utils_sign__["a" /* checkInput */])(e.target, e.target.value),
-          isError = errorStaus[0],
-          errorMsg = errorStaus[1];
+          type = errorStaus[0],
+          isError = errorStaus[1],
+          errorMsg = errorStaus[2];
 
-      if (isError) {
-        console.log('dddd', isError);
-        console.log('dddd2', errorMsg);
-        // 表單有錯誤
-        this.inputError = isError;
+      if (type == 'email') {
+        // 把'是否有錯誤'當作開關
+        this.inputHasError = isError;
+        this.email.error = isError;
 
-        // 讓錯誤訊息出現errorMsg該出現的地方
-        var node = e.target.nextElementSibling;
-        var content = document.createTextNode(errorMsg);
+        // input有錯誤
+        if (isError) {
+          // 讓錯誤訊息出現errorMsg該出現的地方
+          this.email.errorMsg = errorMsg;
+        }
+        // input正確
+        else {
+            this.email.errorMsg = '';
+          }
+      }
+      if (type == 'password') {
+        this.inputHasError = isError;
+        this.passWord.error = isError;
 
-        node.appendChild(content);
-        // this.emailError    = isError;
-        // this.emailErrorMsg = errorMsg;
-      } else {
-        // 表單正確
-        this.inputError = isError;
-        // this.emailError = isError;
-        // this.emailErrorMsg = '';
+        if (isError) {
+          this.passWord.errorMsg = errorMsg;
+        } else {
+          this.passWord.errorMsg = '';
+        }
       }
     },
     checkForm: function checkForm(e) {
@@ -7050,23 +7067,23 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       // * 資料錯誤？ 帳號重複？
       // * 註冊成功，直接登入
       // *
+
       // input有錯誤
-      if (this.inputError) {
+      if (this.inputHasError) {
         return;
       }
-      if (!this.email) {
+      if (!this.email.value) {
         // 計算是否有錯誤
         this.errors.push(this.errorState.emailempty);
-
-        // this.emailErrorMsg = true;
-        $('.input__status--error.email').append(this.errorState.emailempty);
-        $('.input__status--error.email').addClass('error__show');
+        // 存在 Vuex sotre.app
+        this.email.error = true;
+        this.email.errorMsg = this.errorState.emailempty;
       }
-      if (!this.passWord) {
+      if (!this.passWord.value) {
         this.errors.push(this.errorState.passwordempty);
 
-        $('.input__status--error.pw').append(this.errorState.passwordempty);
-        $('.input__status--error.pw').addClass('error__show');
+        this.passWord.error = true;
+        this.passWord.errorMsg = this.errorState.passwordempty;
       }
       if (!this.errors.length) {
         alert('註冊成功');
@@ -7079,7 +7096,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         //   if (res.error) {
         //     this.errors.push(res.error);
         //   } else {
-        //     // 在成功的时候重定向到一个新的 URL 或做一些别的事情
         //     alert('ok!');
         //   }
         // });
@@ -7095,9 +7111,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = clearError;
 /* harmony export (immutable) */ __webpack_exports__["a"] = checkInput;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vuex_store__ = __webpack_require__(15);
+
+
 /* 
     .Validate 
     isEmail:email格式檢查 return true、false 
@@ -7186,30 +7203,9 @@ checkInput = {
     }
 };
 
-
-
-function toggleError(obj, boolean) {
-    var inputHasError = true;
-
-    if (boolean) {
-        obj.parent('.input__wrap').find('p').removeClass('error__show');
-        inputHasError = false;
-    } else {
-        obj.parent('.input__wrap').find('p').addClass('error__show');
-        inputHasError = true;
-    }
-    return inputHasError;
-}
-
-function clearError(obj) {
-    var $obj = $(obj).parent('.input__wrap').find('.js__input__status--error');
-    $obj.removeClass('error__show');
-    $obj.empty();
-}
-
 function checkInput(target, value) {
 
-    var $target = $(target),
+    var type = void 0,
         isError = void 0,
         errorMsg = void 0;
 
@@ -7218,17 +7214,18 @@ function checkInput(target, value) {
         // 判斷input的值是否符合格式
         // 如果不符合，要拋出哪種訊息
         // 引入vuex的state，千萬不要從這邊改vuex裡面的state
-        isError = toggleError($target, checkInput.Validate.isEmail(value));
+        type = 'email';
+        isError = !checkInput.Validate.isEmail(value);
         errorMsg = __WEBPACK_IMPORTED_MODULE_0__vuex_store__["a" /* default */].state.app.errorState.type;
 
-        return [isError, errorMsg];
+        return [type, isError, errorMsg];
     }
     if (target.type == 'password') {
-
-        isError = toggleError($target, checkInput.Validate.chkPassword(value));
+        type = 'password';
+        isError = !checkInput.Validate.chkPassword(value);
         errorMsg = __WEBPACK_IMPORTED_MODULE_0__vuex_store__["a" /* default */].state.app.errorState.less;
 
-        return [isError, errorMsg];
+        return [type, isError, errorMsg];
     }
 }
 
@@ -7311,15 +7308,15 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.email,
-                expression: "email"
+                value: _vm.email.value,
+                expression: "email.value"
               }
             ],
             attrs: { type: "email", placeholder: "信箱" },
-            domProps: { value: _vm.email },
+            domProps: { value: _vm.email.value },
             on: {
               focus: function($event) {
-                _vm.clear($event)
+                _vm.clearEmail($event)
               },
               blur: function($event) {
                 _vm.check($event)
@@ -7328,14 +7325,26 @@ var render = function() {
                 if ($event.target.composing) {
                   return
                 }
-                _vm.email = $event.target.value
+                _vm.$set(_vm.email, "value", $event.target.value)
               }
             }
           }),
           _vm._v(" "),
-          _c("p", {
-            staticClass: "input__status--error js__input__status--error email"
-          })
+          _c(
+            "p",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.email.error,
+                  expression: "email.error"
+                }
+              ],
+              staticClass: "input__status--error js__input__status--error"
+            },
+            [_vm._v(_vm._s(_vm.email.errorMsg))]
+          )
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "input__wrap" }, [
@@ -7344,15 +7353,15 @@ var render = function() {
               {
                 name: "model",
                 rawName: "v-model",
-                value: _vm.passWord,
-                expression: "passWord"
+                value: _vm.passWord.value,
+                expression: "passWord.value"
               }
             ],
             attrs: { type: "password", placeholder: "密碼" },
-            domProps: { value: _vm.passWord },
+            domProps: { value: _vm.passWord.value },
             on: {
               focus: function($event) {
-                _vm.clear($event)
+                _vm.clearPassWord($event)
               },
               blur: function($event) {
                 _vm.check($event)
@@ -7361,14 +7370,26 @@ var render = function() {
                 if ($event.target.composing) {
                   return
                 }
-                _vm.passWord = $event.target.value
+                _vm.$set(_vm.passWord, "value", $event.target.value)
               }
             }
           }),
           _vm._v(" "),
-          _c("p", {
-            staticClass: "input__status--error js__input__status--error pw"
-          })
+          _c(
+            "p",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.passWord.error,
+                  expression: "passWord.error"
+                }
+              ],
+              staticClass: "input__status--error js__input__status--error"
+            },
+            [_vm._v(_vm._s(_vm.passWord.errorMsg))]
+          )
         ]),
         _vm._v(" "),
         _vm._m(0)

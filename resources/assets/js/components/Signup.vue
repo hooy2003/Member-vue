@@ -13,7 +13,7 @@
                @blur="check($event)"
                placeholder="信箱"
                >
-        <p v-show="email.error"
+        <p v-show="email.errorMsg.length > 0"
            class="input__status--error js__input__status--error">{{email.errorMsg}}</p>
       </div>
       <!-- <div class="input__wrap">
@@ -26,7 +26,7 @@
                @blur="check($event)"
                placeholder="密碼"
                >
-        <p v-show="passWord.error"
+        <p v-show="passWord.errorMsg.length > 0"
            class="input__status--error js__input__status--error">{{passWord.errorMsg}}</p>
       </div>
       <div class="form_buttonbar">
@@ -48,12 +48,10 @@ import { mapGetters } from 'vuex'
         errors: [],
         email: {
           value: '',
-          error: false,
           errorMsg: '',
         },
         passWord: {
           value: '',
-          error: false,
           errorMsg: '',
         },
       }
@@ -68,45 +66,26 @@ import { mapGetters } from 'vuex'
       // * Can Use vee-validate!
       // *
       clearEmail(e) {
-        this.email.error    = false;
         this.email.errorMsg = '';
       },
       clearPassWord(e) {
-        this.passWord.error    = false;
         this.passWord.errorMsg = '';
       },
       check(e) {
-        // checkInput => return [type, isError, errorMsg]
+        // checkInput will return [type, isError, errorMsg]
         let errorStaus = checkInput(e.target, e.target.value),
             type       = errorStaus[0],
             isError    = errorStaus[1],
             errorMsg   = errorStaus[2];
 
-        if (type == 'email') {
-          // 把'是否有錯誤'當作開關
-          this.inputHasError = isError;
-          this.email.error    = isError;
+        // 把'是否有錯誤'當作開關
+        this.inputHasError  = isError;
 
-          // input有錯誤
-          if (isError) {
-            // 讓錯誤訊息出現errorMsg該出現的地方
-            this.email.errorMsg = errorMsg;
-          }
-          // input正確
-          else {
-            this.email.errorMsg = '';
-          }
+        if (type == 'email') {
+          this.email.errorMsg = isError ? errorMsg : '';
         }
         if (type == 'password') {
-          this.inputHasError = isError;
-          this.passWord.error = isError;
-
-          if (isError) {
-            this.passWord.errorMsg = errorMsg;
-          }
-          else {
-            this.passWord.errorMsg = '';
-          }
+          this.passWord.errorMsg = isError ? errorMsg : '';
         }
       },
       checkForm(e) {
@@ -123,24 +102,24 @@ import { mapGetters } from 'vuex'
         }
         if(!this.email.value) {
           // 計算是否有錯誤
+          // errorState 存在 Vuex sotre.app
           this.errors.push( this.errorState.emailempty );
-          // 存在 Vuex sotre.app
-          this.email.error    = true;
+          
           this.email.errorMsg = this.errorState.emailempty;
-
         }
         if(!this.passWord.value) {
           this.errors.push( this.errorState.passwordempty );
 
-          this.passWord.error    = true;
           this.passWord.errorMsg = this.errorState.passwordempty;
         }
         if (!this.errors.length) {
           alert('註冊成功');
           // ** 
           // * 後端API串接
+          // * 如果有其他錯誤訊息，可以由我這邊開一個位置，把store 裡的 state叫出來用
+          // * 讓前端控制錯誤訊息
           // *
-          // fetch(apiUrl)
+          // axios.get(apiUrl)
           // .then(res => res.json())
           // .then(res => {
           //   if (res.error) {

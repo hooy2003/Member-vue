@@ -24,12 +24,10 @@ router.beforeEach( (to, form, next) => {
     if(isLogin) {
         next();
     } else {
-        if ( to.path !== '/login' && to.path !== '/signup') {
-            console.log('A');
+        if ( to.path !== '/login' && to.path !== '/signup') {            
             next('/login');
         }
-        else {
-            console.log('B');
+        else {            
             next();
         }
     }

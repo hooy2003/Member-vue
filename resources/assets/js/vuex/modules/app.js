@@ -1,6 +1,10 @@
 const state = {
-    authUser: null,
-    isLoading: false,
+    User: {
+        account: "",
+        name: "",
+        phone: "",
+        isLogin: false
+    },
     errorState: {
         "more"  : "使用者帳號須在5-30個字元",
         "emailempty" : "信箱不得為空",
@@ -14,21 +18,37 @@ const state = {
         "what"  : "無效的資料",
         "code"  : "驗證碼錯誤"
     },
+    isLoading: false,
 };
 
+
 const getters = {
-    authUser: state => state.authUser,
-    isLoading: state => state.isLoading,
-    errorState: state => state.errorState
+    User: state => state.User,    
+    errorState: state => state.errorState,
+    isLoading: state => state.isLoading
 };
 
 const mutations = {
-    authUser (state, user) {
-    state.authUser = user;
+    setUserData(state, { userData }) {
+        console.log(userData);
+        state.User.account  = userData.account;
+        state.User.name     = userData.name;
+        state.User.phone    = userData.phone;
+        state.User.isLogin  = true;
+    },
+    clearUserData(state) {
+        console.log('clearUserData');
+        state.User.account  = "";
+        state.User.name     = "";
+        state.User.phone    = "";
+        state.User.isLogin  = false;
     },
     isLoading (state) {
         state.isLoading = !state.isLoading
     }
+};
+
+const actions = {
 };
 
 export default {

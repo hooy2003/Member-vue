@@ -9,10 +9,42 @@
                 c-15.037,27.091-20.496,55.475,11.154,72.978c14.063,7.776,33.055,9.7,52.17,9.982l48.64,0.14
                 C179.564,237.294,197.689,234.298,197.023,225.545z"/></g></svg>
         </router-link>
-        <ul>
-            <li><a href="/" class="color-white">Test</a></li>
-            <li><a href="/userinfo" class="color-white">userinfo</a></li>
-            <li><a href="/" class="color-white">登入</a></li>
+        <ul v-if="isLogin">
+            <li><router-link to="/home" class="color-white">Home</router-link></li>
+            <li><router-link to="/userinfo" class="color-white">userinfo</router-link></li>
         </ul>
+        <button @click="logout" >Logout</button>
     </nav>
 </template>
+<script>
+import { mapGetters } from 'vuex'
+  export default {
+    computed: {
+      ...mapGetters([
+        'User'
+      ]),
+      isLogin () {
+        return this.User.isLogin;
+      }
+    },
+    methods: {
+      logout(){
+        localStorage.removeItem('token');
+        this.$router.push('/login');
+        //清空state裡面的值
+        this.$store.commit({
+          type: 'clearUserData'
+        });
+      }
+    }
+  }
+</script>
+
+<style lang="scss">
+nav {
+  button {
+    position: absolute;
+    right: 0;
+  }
+}
+</style>

@@ -39,6 +39,8 @@ checkInput = {
             return para == '' ? false : /^[0-9a-zA-Z_]{4,}$/.test(para);
         }, chkPassword: function (para) {
             return para == '' ? false : /(?=^.{6,18}$)(?=.*[a-zA-Z])(?=.*[0-9])(?!.*\s).*$/.test(para);
+        }, chkTel: function (para) {
+            return para == '' ? false : /^[0-9]{8,}$/.test(para);
         }
     }, String: {
         trimSymbol: function (para, symbol) {
@@ -84,7 +86,6 @@ checkInput = {
 
 
 export function checkInput (target, value) {
-
     let type,
         isError,
         errorMsg;
@@ -96,15 +97,23 @@ export function checkInput (target, value) {
         // 引入vuex的state，千萬不要從這邊改vuex裡面的state
         type     = 'email';
         isError  = !checkInput.Validate.isEmail(value);
-        errorMsg = store.state.app.errorState.type;
-        
-        return [type, isError, errorMsg];
+        errorMsg = store.state.app.errorState.type;        
     }
-    if (target.type == 'password') {        
+    if (target.type == 'password') {
         type     = 'password';
         isError  = !checkInput.Validate.chkPassword(value);
         errorMsg = store.state.app.errorState.less;
+    }
+    if (target.type == 'tel') {
+        type     = 'tel';
+        isError  = !checkInput.Validate.chkTel(value);
+        errorMsg = store.state.app.errorState.tel;
+    }
+    if (target.type == 'text') {
+        type     = 'text';
+        isError  = false;
+        errorMsg = '';
+    }
 
-        return [type, isError, errorMsg];        
-    }    
+    return [type, isError, errorMsg];
 }

@@ -32,13 +32,13 @@
       <div class="form_buttonbar">
         <button type="submit"
                 class="primary"
-                >Log In</button>
+                >Sign Up</button>
       </div>
     </form>
   </section>
 </template>
 <script>
-import { checkInput } from '../utils/sign';
+import { checkInput } from '../utils/form';
 import { mapGetters } from 'vuex'
 
   export default {

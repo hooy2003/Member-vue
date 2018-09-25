@@ -40,7 +40,7 @@
                        name: 'Tony',
                        phone: '25551234' };
 
-        if( this.userName == 'admin' && this.passWord == '1234' ) {
+        if( this.userName == '' && this.passWord == '' ) {
           alert('登入成功');
           localStorage.setItem('token', 'ImLogin');
 

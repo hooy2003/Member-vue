@@ -33,7 +33,7 @@ const getters = {
 
 const mutations = {
     setUserData(state, { userData }) {        
-        state.User.account  = userData.account;
+        state.User.account  = userData.email;
         state.User.name     = userData.name;
         state.User.phone    = userData.phone;
         state.User.isLogin  = true;
@@ -47,7 +47,7 @@ const mutations = {
     editUserData(state, {value} ) {
         state.User.email = value.email;
         state.User.name  = value.name;
-        state.User.phone = value.tel;
+        state.User.phone = value.phone;
     },
     isLoading (state) {
         state.isLoading = !state.isLoading

@@ -13,7 +13,7 @@
             <li><router-link to="/home" class="color-white">Home</router-link></li>
             <li><router-link to="/userinfo" class="color-white">userinfo</router-link></li>
         </ul>
-        <button @click="logout" >Logout</button>
+        <!-- <button @click="logout" >Logout</button> -->
     </nav>
 </template>
 <script>

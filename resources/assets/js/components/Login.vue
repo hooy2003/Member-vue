@@ -23,6 +23,7 @@
                 class="primary"
                 >Log In</button>
       </div>
+      <div><router-link to="/">忘記密碼</router-link></div>
     </form>
   </section>
 </template>
@@ -41,8 +42,9 @@
                        phone: '25551234' };
 
         if( this.userName == '' && this.passWord == '' ) {
-          alert('登入成功');
-          localStorage.setItem('token', 'ImLogin');
+          console.log('登入成功');
+          // axios promise 等回傳來的東西用vuex action來非同步處理
+          localStorage.setItem('token', JSON.stringify(resp));
 
           this.$store.commit({
             type: 'setUserData',

@@ -39,7 +39,7 @@ checkInput = {
             return para == '' ? false : /^[0-9a-zA-Z_]{4,}$/.test(para);
         }, chkPassword: function (para) {
             return para == '' ? false : /(?=^.{6,18}$)(?=.*[a-zA-Z])(?=.*[0-9])(?!.*\s).*$/.test(para);
-        }, chkTel: function (para) {
+        }, chkPhone: function (para) {
             return para == '' ? false : /^[0-9]{8,}$/.test(para);
         }
     }, String: {
@@ -104,10 +104,10 @@ export function checkInput (target, value) {
         isError  = !checkInput.Validate.chkPassword(value);
         errorMsg = store.state.app.errorState.less;
     }
-    if (target.type == 'tel') {
-        type     = 'tel';
-        isError  = !checkInput.Validate.chkTel(value);
-        errorMsg = store.state.app.errorState.tel;
+    if (target.type == 'phone') {
+        type     = 'phone';
+        isError  = !checkInput.Validate.chkPhone(value);
+        errorMsg = store.state.app.errorState.phone;
     }
     if (target.type == 'text') {
         type     = 'text';

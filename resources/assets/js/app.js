@@ -19,9 +19,17 @@ const router = new VueRouter({
 });
 
 router.beforeEach( (to, form, next) => {
-    const isLogin = localStorage.getItem('token') == 'ImLogin';
+    const loginUserData = JSON.parse(localStorage.getItem('token'));
 
-    if(isLogin) {
+    // if (!isLogin) {
+    // }
+    if(loginUserData) {
+        // 如在登入狀態下重整，應該把存在localStorage的資料再送給state一次
+        // 如串後端，API應該再傳給state
+        store.commit({
+            type: 'setUserData',
+            userData: loginUserData,
+        });
         next();
     } else {
         if ( to.path !== '/login' && to.path !== '/signup') {            

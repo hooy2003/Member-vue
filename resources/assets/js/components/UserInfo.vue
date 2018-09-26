@@ -25,13 +25,13 @@
       </div>
       <div class="input__wrap">
         <label>電話號碼</label>
-        <input type="tel"
+        <input type="phone"
               class=""
-              v-model="tel.value"
+              v-model="phone.value"
               @keyup="check($event)"
               placeholder="電話號碼">
-        <p v-show="tel.errorMsg.length > 0"
-              class="input__status--error js__input__status--error">{{tel.errorMsg}}</p>
+        <p v-show="phone.errorMsg.length > 0"
+              class="input__status--error js__input__status--error">{{phone.errorMsg}}</p>
       </div>
       <div class="form_buttonbar">
         <button type="submit"
@@ -56,7 +56,7 @@ import { mapGetters } from 'vuex'
           value: '',
           errorMsg: '',
         },
-        tel: {
+        phone: {
           value: '',
           errorMsg: '',
         },
@@ -70,19 +70,11 @@ import { mapGetters } from 'vuex'
       ...mapGetters([
         'User'
       ]),
-      // 可能要先 clone data 一份到這頁，然後用修改完，確認過完後端API
-      // 再從API那邊接回新的data 去 render
-      // userName () {
-      //   return this.User.name;
-      // },
-      // userPhone () {
-      //   return his.User.phone;
-      // },
     },
-    mounted() {
+    created() {
       this.email.value = this.User.email;
       this.name.value = this.User.name;
-      this.tel.value  = this.User.phone;
+      this.phone.value  = this.User.phone;
     },
     methods: {
       check(e) {
@@ -101,24 +93,42 @@ import { mapGetters } from 'vuex'
         if (type == 'password') {
           this.passWord.errorMsg = isError ? errorMsg : '';
         }
-        if (type == 'tel') {
-          this.tel.errorMsg = isError ? errorMsg : '';
+        if (type == 'phone') {
+          this.phone.errorMsg = isError ? errorMsg : '';
         }
         if (type == 'text') {
-          this.tel.errorMsg = isError ? errorMsg : '';
+          this.phone.errorMsg = isError ? errorMsg : '';
         }
       },
       editUserData (e) {
-        console.log('go editUserData');
         let AllData = { email: this.email.value,
-                        name: this.name.value,
-                        tel: this.tel.value};
-        console.log(AllData);
-        // commit 全部的東西進去
-        this.$store.commit({
-          type: 'editUserData',
-          value: AllData
-        })
+                        name:  this.name.value,
+                        phone: this.phone.value};
+        // 如果任一input有錯誤
+        if(this.inputHasError) {
+          alert('資料有誤');
+          return;
+        }
+        else {
+          this.$store.commit({
+            type: 'editUserData',
+            value: AllData
+          })
+          localStorage.setItem('token', JSON.stringify(AllData));
+        }
+        // ** 
+        // * 後端API串接
+        // *
+        // axios.get(apiUrl)
+        // .then(res => res.json())
+        // .then(res => {
+        //   if (res.error) {
+        //     this.errors.push(res.error);
+        //   } else {
+        // this.$store.commit 全部的東西進去
+        //     alert('ok!');
+        //   }
+        // });        
       },
     }
   }

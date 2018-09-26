@@ -96,7 +96,7 @@ import { mapGetters } from 'vuex'
         // * 註冊成功，直接登入
         // *
 
-        // input有錯誤
+        // 如果任一input有錯誤
         if(this.inputHasError) {
           return;
         }

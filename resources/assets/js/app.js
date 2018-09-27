@@ -32,7 +32,7 @@ router.beforeEach( (to, form, next) => {
         });
         next();
     } else {
-        if ( to.path !== '/login' && to.path !== '/signup') {            
+        if ( to.path !== '/login' && to.path !== '/signup' && to.path !== '/search_password') {            
             next('/login');
         }
         else {            

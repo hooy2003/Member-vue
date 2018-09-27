@@ -23,7 +23,7 @@
                 class="primary"
                 >Log In</button>
       </div>
-      <div><router-link to="/">忘記密碼</router-link></div>
+      <div><router-link to="/search_password">忘記密碼</router-link></div>
     </form>
   </section>
 </template>

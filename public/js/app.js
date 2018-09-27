@@ -3905,7 +3905,7 @@ router.beforeEach(function (to, form, next) {
         });
         next();
     } else {
-        if (to.path !== '/login' && to.path !== '/signup') {
+        if (to.path !== '/login' && to.path !== '/signup' && to.path !== '/search_password') {
             next('/login');
         } else {
             next();
@@ -7234,9 +7234,11 @@ if (false) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_Home_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_Home_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_UserInfo_vue__ = __webpack_require__(68);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_UserInfo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_UserInfo_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_vue_router__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_search_password_vue__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_search_password_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_search_password_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_vue__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_vue_router__ = __webpack_require__(15);
 
 
 
@@ -7246,7 +7248,8 @@ if (false) {
 
 
 
-__WEBPACK_IMPORTED_MODULE_5_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_6_vue_router__["a" /* default */]);
+
+__WEBPACK_IMPORTED_MODULE_6_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_7_vue_router__["a" /* default */]);
 
 var routes = [{
   path: '/login',
@@ -7270,6 +7273,12 @@ var routes = [{
   path: '/userinfo',
   components: {
     default: __WEBPACK_IMPORTED_MODULE_4__components_UserInfo_vue___default.a,
+    header: __WEBPACK_IMPORTED_MODULE_2__components_Header_vue___default.a
+  }
+}, {
+  path: '/search_password',
+  components: {
+    default: __WEBPACK_IMPORTED_MODULE_5__components_search_password_vue___default.a,
     header: __WEBPACK_IMPORTED_MODULE_2__components_Header_vue___default.a
   }
 }, {
@@ -7478,7 +7487,11 @@ var render = function() {
         _vm._v(" "),
         _c(
           "div",
-          [_c("router-link", { attrs: { to: "/" } }, [_vm._v("忘記密碼")])],
+          [
+            _c("router-link", { attrs: { to: "/search_password" } }, [
+              _vm._v("忘記密碼")
+            ])
+          ],
           1
         )
       ]
@@ -8256,6 +8269,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      inputHasError: false,
       email: {
         value: '',
         errorMsg: ''
@@ -8524,6 +8538,241 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 72 */,
+/* 73 */,
+/* 74 */,
+/* 75 */,
+/* 76 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(77)
+/* template */
+var __vue_template__ = __webpack_require__(78)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/search_password.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-db40a4ea", Component.options)
+  } else {
+    hotAPI.reload("data-v-db40a4ea", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 77 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_form__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(2);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      inputHasError: false,
+      email: {
+        value: '',
+        errorMsg: ''
+      }
+    };
+  },
+
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_1_vuex__["b" /* mapGetters */])(['errorState'])),
+  methods: {
+    check: function check(e) {
+      // checkInput will return [type, isError, errorMsg]
+      var errorStaus = Object(__WEBPACK_IMPORTED_MODULE_0__utils_form__["a" /* checkInput */])(e.target, e.target.value),
+          type = errorStaus[0],
+          isError = errorStaus[1],
+          errorMsg = errorStaus[2];
+
+      // 把'是否有錯誤'當作開關
+      this.inputHasError = isError;
+
+      if (type == 'email') {
+        this.email.errorMsg = isError ? errorMsg : '';
+      }
+    },
+    searchPassword: function searchPassword() {
+      this.errors = [];
+
+      // 如果任一input有錯誤
+      if (this.inputHasError) {
+        return;
+      }
+      if (!this.email.value) {
+        this.errors.push(this.errorState.emailempty);
+
+        this.email.errorMsg = this.errorState.emailempty;
+      } else {
+        // ** 
+        // * 後端API串接
+        // *
+        alert('新密碼已經寄到您的信箱中了');
+      }
+    }
+  }
+});
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("section", { staticClass: "content" }, [
+    _c("h1", [_vm._v("忘記密碼")]),
+    _vm._v(" "),
+    _c("p", [
+      _vm._v(
+        "密碼重設信件將寄至您認證的 e-mail 信箱。請點選信件中網址重新設定密碼。"
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "form",
+      {
+        attrs: { novalidate: "true" },
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.searchPassword($event)
+          }
+        }
+      },
+      [
+        _c("div", { staticClass: "input__wrap" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.email.value,
+                expression: "email.value"
+              }
+            ],
+            attrs: { type: "email", placeholder: "E-mail" },
+            domProps: { value: _vm.email.value },
+            on: {
+              keyup: function($event) {
+                _vm.check($event)
+              },
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.email, "value", $event.target.value)
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "p",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: _vm.email.errorMsg.length > 0,
+                  expression: "email.errorMsg.length > 0"
+                }
+              ],
+              staticClass: "input__status--error js__input__status--error"
+            },
+            [_vm._v(_vm._s(_vm.email.errorMsg))]
+          )
+        ]),
+        _vm._v(" "),
+        _vm._m(0)
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form_buttonbar" }, [
+      _c("button", { staticClass: "primary", attrs: { type: "submit" } }, [
+        _vm._v("重新設定密碼")
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-db40a4ea", module.exports)
+  }
+}
 
 /***/ })
 ],[18]);
